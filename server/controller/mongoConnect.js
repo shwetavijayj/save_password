@@ -22,7 +22,7 @@ let userSchema = mongoose.Schema({
     password: String
 })
 
-let userDetails = mongoose.Schema({
+let userApplicationDetails = mongoose.Schema({
     applicationid: Number,
     userApplication: String,
     password: Object
@@ -31,5 +31,5 @@ let userDetails = mongoose.Schema({
 module.exports = {
     mongoose,
     userSchema,
-    userDetails
+    userApplicationDetails
 }

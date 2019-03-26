@@ -4,8 +4,10 @@ const key = crypto.randomBytes(32);
 const iv = crypto.randomBytes(16);
 
 const mongoose = require('./mongoConnect');
-let userDataModel = mongoose.mongoose.Model("userData", mongoose.userDetails, "userData");
+let userDataModel = mongoose.mongoose.Model("userData", mongoose.userApplicationDetails, "userData");
 let userDetailsModel = mongoose.mongoose.Model("userSchema", mongoose.userSchema, "userSchema");
+
+//function to encrypt Data.
 function encryptData(dataString, callback) {
     let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
     let encrypted = cipher.update(dataString);
@@ -16,10 +18,22 @@ function encryptData(dataString, callback) {
     callback(null, answer)
 }
 
+//user login
 function login(userDetails, callback) {
+    userDetailsModel.find(userDetails, (err, result) => {
+        if (err) {
+            console.log("Error is :", err);
+            callback(err);
+        }
+        else {
+            console.log("The result is :", result);
+            callback(null, result);
+        }
+    })
     callback(null, result);
 }
 
+//user signup
 function signup(userDetails, callback) {
     callback(null, result);
 }
@@ -42,3 +56,9 @@ module.exports = {
     login,
     signup
 }
+
+//todays task 
+// 1.complete login signup api's with testing
+// 2. expand functionality of encryption.
+
+//use React -redux for front-end
