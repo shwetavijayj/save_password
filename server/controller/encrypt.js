@@ -16,7 +16,19 @@ function encryptData(dataString, callback) {
     let answer = { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
     let randomString = uniqid.process();
     answer.encryptedData = answer.encryptedData + randomString;
-
+    let saveData = {
+        applicationid: 1,
+        userApplication: 'xyz',
+        password: answer
+    }
+    userDataModel.create(saveData, (err, result) => {
+        if (err) {
+            console.log("error", err);
+        }
+        else {
+            console.log("Result", result);
+        }
+    })
     callback(null, answer)
 }
 
@@ -43,7 +55,7 @@ function login(userDetails, callback) {
 }
 
 function decryptData(dataString, callback) {
-    console.log(dataString);
+    console.log("Data in decryptFun", dataString);
     if (dataString.encryptedData.length == 44) {
         dataString.encryptedData = (dataString.encryptedData).slice(0, -12);
         console.log("length is 44", dataString.encryptedData);
@@ -83,9 +95,23 @@ encryptData('text to encrypt', (err, result) => {
 
     }
     console.log("data to pass", result);
-    decryptData(result, (error, result1) => {
-        console.log("Hello-->", result1);
+    // let data = {
+    //     iv: 'b46b8c282549c841e859c2077392f4c4',
+    //     encryptedData: '75a7b16082b7fec89cdcd198dc7c5c5b3q0jtr3xjbd'
+    // }
+    let dataFind = { applicationid: 1 };
+    userDataModel.find(dataFind, (error, result) => {
+        if (error) {
+            //code
+        }
+        else {
+            console.log("result", result[0]);
+            decryptData(result[0].password, (error, result1) => {
+                console.log("Hello-->", result1);
+            })
+        }
     })
+
 
 });
 
