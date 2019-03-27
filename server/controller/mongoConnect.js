@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 //set connection with mongodb
-mongoose.connect("mongodb://localhost/PersonalInfo", {
+mongoose.connect("mongodb://localhost/savepassword", {
     useNewUrlParser: true
 });
 let dbconnect = mongoose.connection;
@@ -17,6 +17,7 @@ if (!dbconnect) {
 //define schema
 
 let userSchema = mongoose.Schema({
+    userid: String,
     email: String,
     username: String,
     password: String
