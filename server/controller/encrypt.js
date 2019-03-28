@@ -21,14 +21,18 @@ function encryptData(dataString, callback) {
         userApplication: 'xyz',
         password: answer
     }
-    userDataModel.create(saveData, (err, result) => {
-        if (err) {
-            console.log("error", err);
-        }
-        else {
-            console.log("Result", result);
-        }
-    })
+    console.log("saving", saveData);
+    // userDataModel.create(saveData, (err, result) => {
+    //     if (err) {
+    //         console.log("error", err);
+    //     }
+    //     else {
+
+    //         console.log("Result", result);
+    //         console.log("Saved");
+    //     }
+    // })
+
     callback(null, answer)
 }
 
@@ -66,11 +70,25 @@ function decryptData(dataString, callback) {
     }
     let iv = Buffer.from(dataString.iv, 'hex');
     console.log("data to decrypt", dataString.encryptedData, "  -->", iv);
+
+
+    function decrypt(data) {
+        var cipher = crypto.createDecipher('aes-256-ecb', password);
+        return cipher.update(data, 'hex', 'utf8') + cipher.final('utf8');
+    }
+
+
     let encryptedText = Buffer.from(dataString.encryptedData, 'hex');
-    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    let decipher = crypto.createDecipher('aes-256-cbc', key, iv);
+    console.log("decipher", decipher);
+    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+    console.log("-----------------------------------");
+    console.log("decrypted", decrypted);
+    decrypted += decipher.final('utf8');
+    // console.log("x", x);
+    decrypted = Buffer.concat([decrypted, decipher.final('utf8')]);
     answer = decrypted.toString();
+    // answer = 'test';
     callback(null, answer);
 }
 
@@ -105,7 +123,7 @@ encryptData('text to encrypt', (err, result) => {
             //code
         }
         else {
-            console.log("result", result[0]);
+            console.log("result", result[0].password);
             decryptData(result[0].password, (error, result1) => {
                 console.log("Hello-->", result1);
             })
